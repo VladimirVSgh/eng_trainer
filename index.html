@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Тренер английского</title>
+    <link rel="stylesheet" href="assets/bootstrap.min.css">
+    <style>
+        input {padding-left: 5px}
+    </style>
+    <script src="assets/angular.min.js"></script>
+    <script src="tests.js"></script>
+    <script src="app.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="text-center">Тренируем английский</h2>
+
+    <div class="row" style="margin-top: 30px; min-height: 400px" ng-controller="menuCtrl">
+        <div class="col-sm-4 col-md-3">
+            <div ng-show="collapsed">
+                <button class="btn btn-default btn-block visible-xs-block" ng-click="collapsed=false">Меню...</button>
+            </div>
+            <div ng-class="{'hidden-xs': collapsed}">
+                <button class="btn btn-default btn-block" ng-class="{active: activeItem==='test1'}" ng-click="changeItem('test1')">Времена глаголов</button>
+                <button class="btn btn-default btn-block" ng-class="{active: activeItem==='test2'}" ng-click="changeItem('test2')">Слова</button>
+                <button class="btn btn-default btn-block" ng-class="{active: activeItem==='test3'}" ng-click="changeItem('test3')">Неправильные глаголы</button>
+                <button class="btn btn-default btn-block" ng-class="{active: activeItem==='test4'}" ng-click="changeItem('test4')">Времена to be</button>
+                <button class="btn btn-default btn-block" ng-class="{active: activeItem==='test5'}" ng-click="changeItem('test5')">Выражения</button>
+                <button class="btn btn-default btn-block" ng-class="{active: activeItem==='test6'}" ng-click="changeItem('test6')">Предложения</button>
+                <button class="btn btn-default btn-block" ng-class="{active: activeItem==='test7'}" ng-click="changeItem('test7')">Послелоги</button>
+                <button class="btn btn-default btn-block" ng-class="{active: activeItem==='test8'}" ng-click="changeItem('test8')">Числа</button>
+                <button class="btn btn-default btn-block" ng-class="{active: activeItem==='info1'}" ng-click="changeItem('info1')">Справочник</button>
+                <button class="btn btn-default btn-block" ng-class="{active: activeItem==='settings'}" ng-click="changeItem('settings')">Настройки</button>
+            </div>
+            <div style="margin-top: 20px"></div>
+        </div>
+        <div class="col-sm-8 col-md-9">
+            <div class="container-fluid" ng-controller="testCtrl" ng-show="activeItem.substring(0,4)==='test'">
+                <div><b>Тема: </b>{{header}}</div>
+                <div style="margin-top: 20px">
+                    <b>Вопрос: </b>{{question}}
+                    <button style="margin-left: 20px" class="btn btn-default" ng-click="speak(question)">&#9658;</button>
+                </div>
+                <div style="margin-top: 20px">
+                    <input type="text" placeholder="Напишите или скажите ваш ответ" ng-model="userAnswer" style="min-width: 240px; width:50%">
+                </div>
+                <button style="margin-top: 20px" class="btn btn-default" ng-show="!showAnswer" ng-click="getAnswer()">Показать ответ</button>
+                <div style="margin-top: 20px" ng-show="showAnswer">
+                    <div>
+                        <b>Ответ: </b>
+                        <div style="margin-top: 10px" ng-repeat="item in answer">
+                            {{item}}
+                            <button style="margin-left: 20px" class="btn btn-default" ng-click="speak(item)">&#9658;</button>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px"><input type="checkbox" ng-model="reverse">&nbsp;Обратное направление</div>
+                    <button style="margin-top: 20px" class="btn btn-default" ng-click="nextQuestion()">Следующий вопрос</button>
+                </div>
+            </div>
+
+            <div class="container-fluid" ng-show="activeItem==='info1'">
+                <div><b>Справочник: </b>полезные таблички</div>
+                <img src="eng6.png" style="margin-top: 20px; max-width: 100%">
+                <img src="eng1.png" style="margin-top: 20px; max-width: 100%">
+                <img src="eng2.png" style="margin-top: 20px; max-width: 100%">
+                <img src="eng3.png" style="margin-top: 20px; max-width: 100%">
+                <img src="eng4.png" style="margin-top: 20px; max-width: 100%">
+                <img src="eng5.png" style="margin-top: 20px; max-width: 100%">
+                <img src="eng7.png" style="margin-top: 20px; max-width: 100%">
+                <img src="eng8.png" style="margin-top: 20px; max-width: 100%">
+                <div style="margin-top: 20px"><small>* Часть информации взято с сайта english-polyglot.com.<br>
+                    ** В английском языке есть много исключений из правил.
+                </small></div>
+            </div>
+
+            <div class="container-fluid" ng-controller="settingsCtrl" ng-show="activeItem==='settings'">
+                <div><b>Настройки: </b></div>
+                <div style="margin-top: 20px">
+                    Показ ответа:
+                    <select ng-model="answerTime" ng-options="option.name for option in timeOptions" ng-change="change()"></select>
+                </div>
+                <div style="margin-top: 20px">
+                    Следующий вопрос:
+                    <select ng-model="nextTime" ng-options="option.name for option in timeOptions" ng-change="change()"></select>
+                </div>
+                <div style="margin-top: 20px">
+                    <input type="checkbox" ng-model="speakMode" ng-change="change()">&nbsp;Включить звук
+                </div>
+                <div style="margin-top: 20px">
+                    <input type="checkbox" ng-model="hideTransc" ng-change="change()">&nbsp;Спрятать транскрипции
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="pull-right" style="margin-top: 60px;">Copyright &copy; 2019 Синицын Владимир<br>
+        <a href="../">Другие проекты лаборатории</a>
+    </div>
+</div>
+
+</body>
+</html>
